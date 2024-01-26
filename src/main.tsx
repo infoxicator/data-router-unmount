@@ -53,7 +53,7 @@ export default function App() {
             setShowRouter(false);
             router = null;
           } else {
-            setShowRouter(false);
+            setShowRouter(true);
             router = initRouter();
           }
         }}
