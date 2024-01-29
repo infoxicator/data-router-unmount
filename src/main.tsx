@@ -37,11 +37,21 @@ const routes = [
   },
 ];
 
-function initRouter() {
-  return createMemoryRouter(routes);
-}
+const MountRouter = () => {
+  let [router, setRouter]: Router | null = React.useState();
+  React.useEffect(() => {
+    setRouter(createMemoryRouter(routes));
+    console.log(router)
+    return () => {
+      setRouter(null);
+    }
+  }, [])
 
-let router: Router | null;
+  if (!router) return <>loading...</>
+
+  return (
+  <RouterProvider router={router} fallbackElement={<p>Loading...</p>} /> )
+}
 
 export default function App() {
   const [showRouter, setShowRouter] = React.useState(false);
@@ -51,17 +61,15 @@ export default function App() {
         onClick={() => {
           if (showRouter) {
             setShowRouter(false);
-            router = null;
           } else {
             setShowRouter(true);
-            router = initRouter();
           }
         }}
       >
         toggle router
       </button>
       {showRouter ? 
-        <RouterProvider router={router} fallbackElement={<p>Loading...</p>} /> : 
+        <MountRouter /> : 
         <p>Router unmounted</p>}
     </>
   );
@@ -73,7 +81,3 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <App />
   </React.StrictMode>
 );
-
-if (import.meta.hot) {
-  import.meta.hot.dispose(() => router.dispose());
-}
